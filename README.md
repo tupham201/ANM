@@ -5,12 +5,13 @@
 [![Cryptography](https://img.shields.io/badge/Cryptography-Hazmat%2043.0+-2C5282.svg?style=flat-square&logo=gnuprivacyguard&logoColor=white)](https://cryptography.io/)
 [![AES-256-GCM](https://img.shields.io/badge/Symmetric-AES--256--GCM-075C49.svg?style=flat-square)](https://csrc.nist.gov/publications/detail/sp/800-38d/final)
 [![RSA-2048](https://img.shields.io/badge/Asymmetric-RSA--2048--OAEP%2FPSS-blueviolet.svg?style=flat-square)](https://datatracker.ietf.org/doc/html/rfc8017)
+[![Playwright](https://img.shields.io/badge/E2E%20Testing-Playwright%20Chromium-2EAD33.svg?style=flat-square&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Pytest](https://img.shields.io/badge/Testing-Pytest%20Suite-brightgreen.svg?style=flat-square&logo=pytest&logoColor=white)](https://pytest.org/)
 [![License](https://img.shields.io/badge/License-Academic%20%2F%20MIT-black.svg?style=flat-square)](LICENSE)
 
 Nền tảng phòng lab tương tác chuyên sâu mô phỏng toàn diện quy trình bảo vệ thư điện tử bằng kỹ thuật **Mã hóa lai (Hybrid Encryption)** và **Chữ ký số (Digital Signature)** chuẩn mật mã học hiện đại. Ứng dụng hỗ trợ mô hình truyền tin an toàn đầu-cuối giữa hai thực thể (Alice & Bob), tích hợp cơ chế phát hiện tấn công can thiệp dữ liệu (**MITM Bit-Flipping Detection**) và vận chuyển linh hoạt qua hộp thư giả lập hoặc tài khoản Gmail thực tế (**SMTP STARTTLS / IMAP SSL**).
 
-Được thiết kế phục vụ báo cáo, đánh giá học thuật và thực hành chuyên sâu môn **An toàn Thông tin**, hệ thống hiện thực hóa trọn vẹn bộ mật mã: **AES-256-GCM (AEAD)**, **RSA-2048-OAEP-SHA256 (Key Encapsulation)**, **RSA-2048-PSS-SHA256 (Chống chối bỏ)** và **Canonical JSON Serialization**.
+Được thiết kế phục vụ báo cáo, đánh giá học thuật và thực hành chuyên sâu môn **An toàn Thông tin**, hệ thống hiện thực hóa trọn vẹn bộ mật mã: **AES-256-GCM (AEAD)**, **RSA-2048-OAEP-SHA256 (Key Encapsulation)**, **RSA-2048-PSS-SHA256 (Chống chối bỏ)**, **Canonical JSON Serialization** cùng bộ kiểm thử tự động toàn diện **E2E Browser Automation với Playwright**.
 
 ---
 
@@ -112,7 +113,8 @@ Bảo vệ nội dung email và toàn bộ file đính kèm với thuật toán 
 | **Giao thức Mạng (Gửi)**| Mail Transport (Out) | **SMTP + STARTTLS** | Port 587 | Kết nối mã hóa TLS gửi thư tới Google Gmail SMTP |
 | **Giao thức Mạng (Nhận)**| Mail Transport (In) | **IMAP + SSL/TLS** | Port 993 | Kết nối mã hóa SSL tải thư bảo mật từ Google Gmail IMAP |
 | **Quản lý Cấu hình** | Environment Loader | **python-dotenv** | $\ge 1.0.1$ | Nạp cấu hình bảo mật từ `.env` vào bộ nhớ |
-| **Đảm bảo Chất lượng** | Automated Testing | **pytest + AppTest** | $\ge 8.3.0$ | Kiểm thử toàn vẹn mật mã, mock mạng và smoke test UI |
+| **Kiểm thử Đơn vị & Mock** | Unit & Smoke Testing | **pytest + AppTest** | $\ge 8.3.0$ | Kiểm thử toàn vẹn mật mã, mock mạng và smoke test UI |
+| **Kiểm thử Tự động E2E**| Browser Automation | **Playwright Chromium** | $\ge 1.40.0$ | Tự động hóa kiểm thử bảo mật đầu-cuối trên trình duyệt thật |
 
 ---
 
@@ -120,27 +122,32 @@ Bảo vệ nội dung email và toàn bộ file đính kèm với thuật toán 
 
 ```text
 ANM/
-├── app.py                      # Giao diện chính Streamlit & Quản lý luồng tương tác 3 Tabs
-├── src/                        # Thư mục chứa mã nguồn nghiệp vụ cốt lõi
-│   ├── __init__.py             # Khởi tạo gói module Python
-│   ├── config.py               # Xử lý biến môi trường, MailConfig và hằng số giới hạn
-│   ├── crypto_engine.py        # Động cơ mật mã: AES-GCM, RSA-OAEP, RSA-PSS, Envelope v1.0
-│   ├── key_manager.py          # Quản lý vòng đời RSA: sinh khóa, xuất/nhập PKCS#8 PEM, Fingerprint
-│   └── mail_service.py         # Module mạng: Gửi SMTP STARTTLS và nhận IMAP SSL Gmail
-├── tests/                      # Bộ kiểm thử tự động toàn diện
+├── app.py                                  # Giao diện chính Streamlit & Quản lý luồng tương tác 3 Tabs
+├── src/                                    # Thư mục chứa mã nguồn nghiệp vụ cốt lõi
+│   ├── __init__.py                         # Khởi tạo gói module Python
+│   ├── config.py                           # Xử lý biến môi trường, MailConfig và hằng số giới hạn
+│   ├── crypto_engine.py                    # Động cơ mật mã: AES-GCM, RSA-OAEP, RSA-PSS, Envelope v1.0
+│   ├── key_manager.py                      # Quản lý vòng đời RSA: sinh khóa, xuất/nhập PKCS#8 PEM, Fingerprint
+│   └── mail_service.py                     # Module mạng: Gửi SMTP STARTTLS và nhận IMAP SSL Gmail
+├── tests/                                  # Bộ kiểm thử tự động toàn diện (14 test cases)
 │   ├── __init__.py
-│   ├── test_flow.py            # Kiểm thử luồng mật mã, kiểm thử phát hiện lỗi đảo 1-bit MITM
-│   ├── test_mail_service.py    # Kiểm thử logic phân tích cú pháp tiêu đề, payload email
-│   └── test_app_smoke.py       # Kiểm thử giao diện Streamlit AppTest khởi động không lỗi
+│   ├── test_flow.py                        # Unit tests: kiểm thử thuật toán mật mã & bắt lỗi đảo 1-bit
+│   ├── test_mail_service.py                # Unit tests: phân tích cú pháp tiêu đề và payload email
+│   ├── test_app_smoke.py                   # Smoke tests: kiểm thử Streamlit AppTest khởi động không lỗi
+│   ├── test_e2e_security_playwright.py     # E2E Security tests: Playwright tự động hóa kiểm thử bảo mật
+│   └── screenshots/                        # Ảnh chụp minh chứng kết quả kiểm thử tự động
+│       ├── TC01_happy_path_verified.png    # Minh chứng TC-01: luồng gửi, giải mã & chữ ký hợp lệ
+│       ├── TC02_mitm_tampering_blocked.png # Minh chứng TC-02: AES-GCM chặn tấn công sửa đổi 1-bit
+│       └── TC03_impersonation_rejected.png # Minh chứng TC-03: RSA-PSS từ chối khóa mạo danh
 ├── .streamlit/
-│   └── config.toml             # Cấu hình giao diện tùy chỉnh (Forest/Mint Palette, Max Upload)
+│   └── config.toml                         # Cấu hình giao diện tùy chỉnh (Forest/Mint Palette, Max Upload)
 ├── .codex/
-│   └── hooks.json              # Cấu hình kiểm tra UI & tự động hóa Codex
-├── .env.example                # Tệp cấu hình mẫu (Mẫu khai báo Gmail credentials)
-├── .gitignore                  # Chặn rò rỉ khóa bí mật, file .env, cache và môi trường ảo
-├── PRODUCT.md                  # Tài liệu đặc tả sản phẩm & kiến trúc hệ thống chi tiết
-├── requirements.txt            # Danh sách thư viện phụ thuộc
-└── README.md                   # Tài liệu hướng dẫn kỹ thuật chính (Tài liệu này)
+│   └── hooks.json                          # Cấu hình kiểm tra UI & tự động hóa Codex
+├── .env.example                            # Tệp cấu hình mẫu (Mẫu khai báo Gmail credentials)
+├── .gitignore                              # Chặn rò rỉ khóa bí mật, file .env, cache và môi trường ảo
+├── PRODUCT.md                              # Tài liệu đặc tả sản phẩm & kiến trúc hệ thống chi tiết
+├── requirements.txt                        # Danh sách thư viện phụ thuộc (bao gồm Playwright)
+└── README.md                               # Tài liệu hướng dẫn kỹ thuật chính (Tài liệu này)
 ```
 
 ---
@@ -151,7 +158,7 @@ ANM/
 - **Hệ điều hành**: Windows 10/11, Ubuntu 20.04+, macOS (Đã kiểm thử tối ưu trên Windows PowerShell).
 - **Python**: Phiên bản `3.10`, `3.11` hoặc `3.12` (Khuyên dùng: **Python 3.11.9**).
 - **Bộ nhớ (RAM)**: Tối thiểu 2 GB RAM trống.
-- **Mạng**: Cần kết nối Internet nếu sử dụng kênh vận chuyển Gmail thật.
+- **Mạng**: Cần kết nối Internet nếu sử dụng kênh vận chuyển Gmail thật hoặc tải trình duyệt Playwright Chromium.
 
 ---
 
@@ -174,21 +181,43 @@ python -m venv .venv
 
 ---
 
-### Bước 2: Cài đặt Thư viện Phụ thuộc (`requirements.txt`)
+### Bước 2: Cài đặt Thư viện Phụ thuộc & Trình duyệt Playwright
 
-Nâng cấp trình quản lý `pip` và cài đặt các thư viện mật mã:
+Nâng cấp `pip`, cài đặt các thư viện mật mã và tải trình duyệt Chromium không đầu:
 
 ```powershell
+# 1. Nâng cấp pip và cài đặt dependencies
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+# 2. Cài đặt trình duyệt Chromium cho Playwright E2E testing
+.\.venv\Scripts\python.exe -m playwright install chromium
 ```
 
 ---
 
-### Bước 3: Chạy Bộ Kiểm thử Xác nhận Tự động (`pytest`)
+### Bước 3: Chạy Bộ Kiểm thử Toàn diện (`pytest` & Playwright)
 
-Trước khi khởi động giao diện, chạy toàn bộ bộ kiểm thử để xác minh tính đúng đắn của các giải thuật toán học:
+Hệ thống hỗ trợ 2 chế độ kiểm thử tự động:
 
+#### Chế độ 1: Chạy kiểm thử tự động E2E Playwright trên Trình duyệt thật (Khuyên dùng khi báo cáo đồ án)
+Khởi chạy bộ 3 test cases bảo mật chuyên sâu, tự động chụp ảnh minh chứng:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_e2e_security_playwright.py -v
+```
+
+*Kết quả mong đợi:*
+```text
+tests/test_e2e_security_playwright.py::test_tc01_happy_path_send_decrypt_and_verify[chromium] PASSED [ 33%]
+tests/test_e2e_security_playwright.py::test_tc02_mitm_tampering_1bit_attack[chromium] PASSED [ 66%]
+tests/test_e2e_security_playwright.py::test_tc03_sender_public_key_impersonation_attack[chromium] PASSED [100%]
+
+======================== 3 passed in ~9s ========================
+```
+> Ảnh minh chứng kết quả sẽ tự động được lưu tại thư mục **`tests/screenshots/`**.
+
+#### Chế độ 2: Chạy toàn bộ 14 Unit, Smoke và E2E Test Cases:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -v
 ```
@@ -206,8 +235,11 @@ tests/test_mail_service.py::test_blank_credentials_are_not_configured PASSED
 tests/test_mail_service.py::test_subject_contains_secure_transport_marker PASSED
 tests/test_mail_service.py::test_payload_parser_rejects_other_protocols PASSED
 tests/test_app_smoke.py::test_streamlit_app_renders_without_exceptions PASSED
+tests/test_e2e_security_playwright.py::test_tc01_happy_path_send_decrypt_and_verify[chromium] PASSED
+tests/test_e2e_security_playwright.py::test_tc02_mitm_tampering_1bit_attack[chromium] PASSED
+tests/test_e2e_security_playwright.py::test_tc03_sender_public_key_impersonation_attack[chromium] PASSED
 
-======================== 11 passed in 1.45s ========================
+======================== 14 passed in ~10s ========================
 ```
 
 ---
@@ -250,7 +282,8 @@ Truy cập giao diện phòng lab tại trình duyệt: **`http://localhost:8501
 ## 6. Kịch bản Thực hành & Báo cáo Demo (Execution Scenarios)
 
 ### 🚀 Kịch bản 1: Luồng Nghiệp vụ Chuẩn (Alice gửi thư bảo mật cho Bob)
-> **Mục tiêu**: Chứng minh quy trình bảo vệ toàn diện qua 3 giai đoạn: Tạo danh tính $\rightarrow$ Mã hóa & Ký $\rightarrow$ Giải mã & Xác minh.
+> **Mục tiêu**: Chứng minh quy trình bảo vệ toàn diện qua 3 giai đoạn: Tạo danh tính $\rightarrow$ Mã hóa & Ký $\rightarrow$ Giải mã & Xác minh.  
+> **Tự động hóa E2E**: Được kiểm chứng tự động bởi `test_tc01_happy_path_send_decrypt_and_verify`.
 
 1. **Tab `01 · Khóa`**:
    - Nhập mật khẩu bảo vệ khóa nếu cần.
@@ -265,12 +298,14 @@ Truy cập giao diện phòng lab tại trình duyệt: **`http://localhost:8501
    - Chọn bức thư vừa nhận trong danh sách.
    - Nhấn **Giải mã và thẩm định**.
    - Hệ thống dùng khóa riêng của Bob giải mã khóa phiên AES $\rightarrow$ giải mã nội dung $\rightarrow$ dùng khóa công khai Alice thẩm định chữ ký.
-   - Banner xanh **CHỮ KÝ SỐ HỢP LỆ** xuất hiện cùng toàn văn bản rõ và tệp đính kèm nguyên vẹn.
+   - Banner xanh **CHỮ KÝ SỐ HỢP LỆ** xuất hiện cùng toàn văn bản rõ và tệp đính kèm nguyên vẹn.  
+   *(Xem minh chứng tự động: `tests/screenshots/TC01_happy_path_verified.png`)*
 
 ---
 
 ### 🛡️ Kịch bản 2: Mô phỏng Tấn công Kẻ đứng giữa (MITM 1-Bit Tampering Attack)
-> **Mục tiêu**: Chứng minh khả năng tự vệ của khối **AEAD AES-256-GCM** trước tấn công sửa đổi bản mã trên đường truyền.
+> **Mục tiêu**: Chứng minh khả năng tự vệ của khối **AEAD AES-256-GCM** trước tấn công sửa đổi bản mã trên đường truyền.  
+> **Tự động hóa E2E**: Được kiểm chứng tự động bởi `test_tc02_mitm_tampering_1bit_attack`.
 
 1. Tại Tab **`03 · Thẩm định`**, chọn một bức thư hợp lệ.
 2. Nhấn nút: **"Mô phỏng sửa 1 bit (MITM)"**.
@@ -278,18 +313,21 @@ Truy cập giao diện phòng lab tại trình duyệt: **`http://localhost:8501
    - Hệ thống tự động đảo 1 bit duy nhất (`ciphertext[len // 2] ^= 1`) mô phỏng hacker can thiệp vào gói tin.
    - Khối AES-GCM tính toán lại thẻ xác thực và phát hiện Auth Tag không trùng khớp với bản mã bị sửa.
    - Ngoại lệ `InvalidTag` được kích hoạt ngay lập tức, chặn đứng luồng xử lý và **tuyệt đối không hiển thị bản rõ**.
-   - Banner đỏ cảnh báo: **"AES-GCM ĐÃ CHẶN CUỘC TẤN CÔNG — Auth Tag không còn hợp lệ!"**.
+   - Banner đỏ cảnh báo: **"AES-GCM ĐÃ CHẶN CUỘC TẤN CÔNG — Auth Tag không còn hợp lệ!"**.  
+   *(Xem minh chứng tự động: `tests/screenshots/TC02_mitm_tampering_blocked.png`)*
 
 ---
 
 ### 👤 Kịch bản 3: Tấn công Mạo danh Người gửi (Chữ ký Số Thất bại)
-> **Mục tiêu**: Chứng minh vai trò của **RSA-PSS** trong việc bảo đảm tính toàn vẹn và chống mạo danh nguồn gốc.
+> **Mục tiêu**: Chứng minh vai trò của **RSA-PSS** trong việc bảo đảm tính toàn vẹn và chống mạo danh nguồn gốc.  
+> **Tự động hóa E2E**: Được kiểm chứng tự động bởi `test_tc03_sender_public_key_impersonation_attack`.
 
 1. Tại Tab **`03 · Thẩm định`**, mở rộng mục **Sử dụng khóa PEM tùy chỉnh**.
 2. Tải lên một Public Key lạ (không phải của Alice) vào ô *Public Key người gửi*.
 3. Nhấn **Giải mã và thẩm định**.
 4. Bản mã AES-GCM vẫn được giải mã thành công (do Bob dùng đúng Private Key của mình), nhưng bước xác minh chữ ký RSA-PSS bằng Public Key lạ bị từ chối.
-5. Cảnh báo an ninh xuất hiện: **"CHỮ KÝ KHÔNG HỢP LỆ — Không tin cậy nội dung đã giải mã!"**.
+5. Cảnh báo an ninh xuất hiện: **"CHỮ KÝ KHÔNG HỢP LỆ — Không tin cậy nội dung đã giải mã!"**.  
+   *(Xem minh chứng tự động: `tests/screenshots/TC03_impersonation_rejected.png`)*
 
 ---
 
